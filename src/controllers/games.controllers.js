@@ -15,11 +15,17 @@ export async function postGames(req, res) {
     if (!name || stockTotal < 1 || pricePerDay < 1) return res.sendStatus(400);
 
     // status 409 caso já tenha name
+    
 
     try {
+        const nome = await db.query(`SELECT * FROM games WHERE name = $1;`, [name])
+
+        if (nome.rows[0]) return res.sendStatus(409)
+
         await db.query(`INSERT INTO games 
         (name, image, "stockTotal", "pricePerDay") 
         VALUES ($1, $2, $3, $4)`,[name, image, stockTotal, pricePerDay]);
+
         res.sendStatus(201)
     } catch (err) {
         res.sendStatus(500)

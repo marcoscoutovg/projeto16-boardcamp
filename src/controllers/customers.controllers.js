@@ -19,8 +19,6 @@ export async function getCustomersById(req, res) {
 
         console.log(customersById)
 
-        if (customersById.rows.id) return res.sendStatus(404);
-
         res.send(customersById.rows[0])
 
     } catch (err) {
@@ -32,8 +30,13 @@ export async function insertCustomers(req, res) {
 
     const { name, phone, cpf, birthday } = req.body
     try {
+        const cliente = await db.query(`SELECT * FROM customers WHERE cpf = $1;`, [cpf])
+
+        if (cliente.rows[0]) return res.sendStatus(409);
+        
         await db.query(`INSERT INTO customers (name, phone, cpf, birthday)
         VALUES($1, $2, $3, $4);`, [name, phone, cpf, birthday]);
+
         res.sendStatus(201)
 
     } catch (err) {
