@@ -58,7 +58,7 @@ export async function insertRentals(req, res) {
 
         const checkGame = await db.query(`SELECT * FROM rentals WHERE "gameId"=$1 AND "returnDate" = null;`, [gameId])
 
-        if (checkGame.rows.length > findGameId.rows[0].stockTotal) return res.sendStatus(400)
+        if (checkGame.rows.length >= findGameId.rows[0].stockTotal) return res.sendStatus(400)
 
         await db.query(`INSERT INTO rentals ("customerId", "gameId", "rentDate", "daysRented", "returnDate", "originalPrice", "delayFee")
         VALUES($1, $2, $3, $4, null, $5, null);`, [customerId, gameId, rentDate, daysRented, originalPrice])
