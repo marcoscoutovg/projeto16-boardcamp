@@ -72,8 +72,18 @@ export async function finalizeRentals(req, res) {
 
     const { id } = req.params
     try {
-        await db.query(`INSERT INTO rentals (customerId, gameId, rentDate, daysRented, returnDate, originalPrice, delayFree)
-        VALUES(     );`)
+
+        const returnDate = dayjs().format("YYYY-MM-DD");
+
+        const rent = await db.query(`SELECT * FROM rentals WHERE id = $1;`, [id])
+
+        await db.query(`UPDATE rentals SET 
+        "returnDate" = $1, 
+        WHERE id = $2;`, [returnDate, id])
+
+        if(rent.rows.length === 0) return res.sendStatus(404)
+
+        if (rent.rows[0].returnDate !== null) return res.sendStatus(400)
         res.sendStatus(200)
     } catch (err) {
         res.sendStatus(500)
@@ -83,6 +93,7 @@ export async function finalizeRentals(req, res) {
 export async function deleteRentals(req, res) {
 
     const { id } = req.params
+
     try {
         const deleteRent = await db.query(`SELECT * FROM rentals WHERE id=$1;`, [id])
 
@@ -90,7 +101,7 @@ export async function deleteRentals(req, res) {
 
         if (deleteRent.rows[0].returnDate === null) return res.sendStatus(400)
 
-        await db.query(`DELETE FROM rentals WHERE id = $1`, [id])
+        await db.query(`DELETE FROM rentals WHERE id = $1;`, [id])
         res.sendStatus(200)
     } catch (err) {
         res.sendStatus(500)
