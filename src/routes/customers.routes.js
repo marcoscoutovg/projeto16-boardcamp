@@ -11,6 +11,6 @@ customersRouter.get("/customers/:id", getCustomersById)
 
 customersRouter.post("/customers", validateSchema(customerSchema), insertCustomers)
 
-customersRouter.put("/costumers/:id", validateSchema(customerSchema), updateCustomers)
+customersRouter.put("/customers/:id", validateSchema(customerSchema), updateCustomers)
 
 export default customersRouter;
