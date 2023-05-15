@@ -16,9 +16,10 @@ export async function getRentals(req, res) {
 export async function insertRentals(req, res) {
 
     const { customerId, gameId, daysRented } = req.body
+
     try {
-        await db.query(`INSERT INTO rentals (customerId, gameId, rentDate, daysRented, returnDate, originalPrice, delayFree)
-        VALUES(     );`)
+        await db.query(`INSERT INTO rentals ("customerId", "gameId", "rentDate", "daysRented", "returnDate", "originalPrice", "delayFree")
+        VALUES(     );`, [customerId, gameId, daysRented])
         res.sendStatus(201)
     } catch (err) {
         res.sendStatus(500)
